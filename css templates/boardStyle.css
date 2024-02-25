@@ -1,0 +1,42 @@
+
+* {
+    list-style: none;
+}
+
+.main_header {
+    background-color : rgb(40, 40, 147);
+    display : flex;
+    justify-content: center;
+}    
+
+.main_header .main_title {
+    color : white;
+    padding : 20px;
+    font-family: "Nanum Gothic Coding", monospace;
+    font-weight: 700;
+    font-style: normal;
+}
+
+main {
+    display:flex;
+    flex-direction:column;
+    align-items: center;
+}
+
+.main_board {
+    padding : 0 100% ;
+    margin : 0;
+}
+
+.main_board > li {
+    padding-top : 10px;
+    padding-bottom : 10px;
+}
+
+.main_board > li:first-of-type {
+    padding-top : 20px;
+}
+
+.main_board > li:last-of-type {
+    padding-bottom : 20px;
+}
