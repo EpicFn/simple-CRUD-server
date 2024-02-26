@@ -40,3 +40,8 @@ main {
 .main_board > li:last-of-type {
     padding-bottom : 20px;
 }
+
+.pagination > li:nth-child(2) > .page-link {
+    background-color : rgb(40, 40, 147);
+    color : white;
+}
