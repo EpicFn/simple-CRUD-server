@@ -66,4 +66,15 @@ app.post('/update_process', function(req,res){
     res.redirect(`/post?id=${title}`);
 })
 
+app.get('/delete', function(req,res){
+    var id = req.query.id;
+
+    fs.unlink(`Data/${id}`, function (err) {
+        if (err) throw err;
+        console.log('File deleted!');
+    });
+
+    res.redirect(`/`);
+})
+
 app.listen(3000);
