@@ -1,12 +1,15 @@
-var express = require('express');
-var app = express();
+const express = require('express');
+const app = express();
 
-var template = require('./template');
+const template = require('./template');
+const fs = require('fs');
 
 // app 구축
 
 app.use(express.static('css templates'));
 app.use(express.static('Data'));
+
+app.use(express.urlencoded({extended: true}));
 
 
 app.get('/', function(req,res){
@@ -26,10 +29,24 @@ app.get('/board', function(req,res){
 })
 
 app.get('/post', function(req, res){
-    var id = req.query.id;
-
-    res.send(template.post(id));
+    res.send(template.post(req.query.id));
 })
 
+app.get('/create', function(req, res){
+    res.send(template.create());
+})
+
+app.post('/create_process', function(req, res){
+    var title = req.body.title;
+    var line = req.body.line;
+
+    fs.writeFile(`Data/${title}`, line, function(err){
+        if(err){
+            console.err(err);
+        }
+    })
+
+    res.redirect(`/`);
+})
 
 app.listen(3000);

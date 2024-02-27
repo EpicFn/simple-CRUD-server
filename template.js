@@ -17,7 +17,7 @@ var template = {
 
             for(var i =0; i<4; i++){
                 if(((page-1)*4 + i) < files.length){
-                    post[i] = `<li class="content1"><a href='/post?id=${files[(page-1)*4 + i]}'>${files[(page-1)*4 + i]}</a></li>`;
+                    post[i] = `<li class="content"><a href='/post?id=${files[(page-1)*4 + i]}'>${files[(page-1)*4 + i]}</a></li>`;
                 }
                 else
                     break;
@@ -70,8 +70,9 @@ var template = {
             <body>
                 <header class="main_header">
                     <h1 class="main_title">커여운 게시판!!!</h1>
+                    <a href='/create' class='create_button'>글 작성</a>
                 </header>
-
+                
                 <main>
                     <ul class="main_board">
                         ${post[0]}
@@ -157,6 +158,58 @@ var template = {
             </body>
         </html>
         `
+    },
+
+    create : function() {
+        return `
+        <!doctype html>
+        <html lang="en">
+            <head>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <title>Bootstrap demo</title>
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+            </head>
+            <body>
+                <header class="main_header">
+                    <h1 class="main_title">커여운 게시판!!!</h1>
+                </header>
+                <main>
+                    <form action = "/create_process" accept-charset="utf-8" name="createData" method="post">
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">제목</label>
+                            <input type="text" class="form-control" id="exampleFormControlInput1" name="title">
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleFormControlTextarea1" class="form-label">내용</label>
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="line"></textarea>
+                        </div>
+                        <input type="submit">
+                    </form>
+                </main>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+            </body>
+        </html>
+        <style>
+            main {
+                margin : 20px
+            }
+
+            .main_header {
+                background-color : rgb(40, 40, 147);
+                display : flex;
+                justify-content: center;
+            }    
+            
+            .main_header .main_title {
+                color : white;
+                padding : 20px;
+                font-family: "Nanum Gothic Coding", monospace;
+                font-weight: 700;
+                font-style: normal;
+            }
+        </style>
+`
     }
 };
 
