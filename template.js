@@ -125,7 +125,7 @@ var template = {
             <head>
                 <meta charset="utf-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1">
-                <title>post</title>
+                <title>${title}</title>
                 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
                 <link rel="stylesheet" href="postStyle.css" >
             </head>
@@ -140,10 +140,10 @@ var template = {
                             <div class="collapse navbar-collapse" id="navbarNav">
                                 <ul class="navbar-nav">
                                     <li class="nav-item">
-                                        <a class="nav-link active" aria-current="page" href="#">수정</a>
+                                        <a class="nav-link active" aria-current="page" href="/update?id=${id}">수정</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="#">삭제</a>
+                                        <a class="nav-link" href="/delete?id=${id}">삭제</a>
                                     </li>
                                 </ul>
                             </div>
@@ -160,7 +160,23 @@ var template = {
         `
     },
 
-    create : function() {
+    inputForm : function(mode, id=null) {
+
+        var title = '';
+        var line = '';
+        if(id!=null){
+            title = id;
+            var fs = require('fs')
+            const filepath = `./Data/${id}`;
+
+            try {
+                line = fs.readFileSync(filepath, 'utf8');
+            }   catch(err){
+                console.error(err);
+            }
+        }
+
+
         return `
         <!doctype html>
         <html lang="en">
@@ -172,17 +188,17 @@ var template = {
             </head>
             <body>
                 <header class="main_header">
-                    <h1 class="main_title">커여운 게시판!!!</h1>
+                    <h1 class="main_title"><a href="/">커여운 게시판!!!</a></h1>
                 </header>
                 <main>
-                    <form action = "/create_process" accept-charset="utf-8" name="createData" method="post">
+                    <form action = "/${mode}_process" accept-charset="utf-8" name="createData" method="post">
                         <div class="mb-3">
                             <label for="exampleFormControlInput1" class="form-label">제목</label>
-                            <input type="text" class="form-control" id="exampleFormControlInput1" name="title">
+                            <input type="text" class="form-control" id="exampleFormControlInput1" name="title" value="${title}">
                         </div>
                         <div class="mb-3">
                             <label for="exampleFormControlTextarea1" class="form-label">내용</label>
-                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="line"></textarea>
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="line">${line}</textarea>
                         </div>
                         <input type="submit">
                     </form>
@@ -207,6 +223,11 @@ var template = {
                 font-family: "Nanum Gothic Coding", monospace;
                 font-weight: 700;
                 font-style: normal;
+            }
+
+            .main_title > a {
+                text-decoration: none;
+                color : white;
             }
         </style>
 `

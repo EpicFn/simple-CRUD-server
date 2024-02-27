@@ -33,7 +33,7 @@ app.get('/post', function(req, res){
 })
 
 app.get('/create', function(req, res){
-    res.send(template.create());
+    res.send(template.inputForm('create'));
 })
 
 app.post('/create_process', function(req, res){
@@ -47,6 +47,23 @@ app.post('/create_process', function(req, res){
     })
 
     res.redirect(`/`);
+})
+
+app.get('/update', function(req,res){
+    res.send(template.inputForm('update', req.query.id));
+})
+
+app.post('/update_process', function(req,res){
+    var title = req.body.title;
+    var line = req.body.line;
+
+    fs.writeFile(`Data/${title}`, line, function(err){
+        if(err){
+            console.err(err);
+        }
+    })
+
+    res.redirect(`/post?id=${title}`);
 })
 
 app.listen(3000);
