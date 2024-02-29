@@ -4,6 +4,8 @@ const app = express();
 const template = require('./template');
 const fs = require('fs');
 
+var postId = null;
+
 // app 구축
 
 app.use(express.static('css templates'));
@@ -13,12 +15,13 @@ app.use(express.urlencoded({extended: true}));
 
 
 app.get('/', function(req,res){
+    postId = null;
     res.send(template.board(1));
 });
 
 app.get('/board', function(req,res){
     var pageNum = req.query.page;
-
+    postId = null;
     
     if(pageNum == '1'){
         res.redirect(`/`);
@@ -29,6 +32,8 @@ app.get('/board', function(req,res){
 })
 
 app.get('/post', function(req, res){
+    postId = req.query.id;
+    console.log(postId);
     res.send(template.post(req.query.id));
 })
 
@@ -50,7 +55,11 @@ app.post('/create_process', function(req, res){
 })
 
 app.get('/update', function(req,res){
-    res.send(template.inputForm('update', req.query.id));
+    if(req.query.id == postId)
+        res.send(template.inputForm('update', req.query.id));
+    else{
+        res.send('잘못된 접근');
+    }
 })
 
 app.post('/update_process', function(req,res){
@@ -67,14 +76,18 @@ app.post('/update_process', function(req,res){
 })
 
 app.get('/delete', function(req,res){
-    var id = req.query.id;
+    if(req.query.id == postId){
+        fs.unlink(`Data/${req.query.id}`, function (err) {
+            if (err) throw err;
+        });
 
-    fs.unlink(`Data/${id}`, function (err) {
-        if (err) throw err;
-        console.log('File deleted!');
-    });
+        res.redirect(`/`);
+    }
+    else{
+        res.send('잘못된 접근');
+    }
 
-    res.redirect(`/`);
+    
 })
 
 app.listen(3000);

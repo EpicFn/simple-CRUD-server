@@ -59,3 +59,7 @@ main {
     color : rgb(40, 40, 147);
 }
 
+.main_title > a {
+    text-decoration: none;
+    color : white;
+}

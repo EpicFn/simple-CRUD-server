@@ -69,7 +69,7 @@ var template = {
             </head>
             <body>
                 <header class="main_header">
-                    <h1 class="main_title">커여운 게시판!!!</h1>
+                    <h1 class="main_title"><a href="/">커여운 게시판!!!</a></h1>
                     <a href='/create' class='create_button'>글 작성</a>
                 </header>
                 
