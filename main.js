@@ -6,6 +6,15 @@ const fs = require('fs');
 
 var postId = null;
 
+const DB_meta_Data = {
+    host     : 'localhost',
+    user     : 'root',
+    password : '583327',
+    database : 'simple_crud'
+};
+
+
+
 // app 구축
 
 app.use(express.static('css templates'));
@@ -14,12 +23,19 @@ app.use(express.static('Data'));
 app.use(express.urlencoded({extended: true}));
 
 
-app.get('/', function(req,res){
+app.get('/', async function(req,res){
     postId = null;
-    res.send(template.board(1));
+
+    try {
+        res.send(await template.board(1, DB_meta_Data));
+    } catch (error) {
+        console.error('Error: ', error);
+        res.status(500).send('Internal Server Error');
+    }
+    
 });
 
-app.get('/board', function(req,res){
+app.get('/board', async function(req,res){
     var pageNum = req.query.page;
     postId = null;
     
@@ -27,13 +43,17 @@ app.get('/board', function(req,res){
         res.redirect(`/`);
     }
     else{
-        res.send(template.board(Number(pageNum)));
+        try {
+            res.send(await template.board(Number(pageNum), DB_meta_Data));
+        } catch (error) {
+            console.error('Error: ', error);
+            res.status(500).send('Internal Server Error');
+        }
     }
 })
 
 app.get('/post', function(req, res){
     postId = req.query.id;
-    console.log(postId);
     res.send(template.post(req.query.id));
 })
 

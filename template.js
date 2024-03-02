@@ -1,35 +1,49 @@
+
+
 var template = {
     /**
      * 게시판 템플릿 html을 반환한다
      * @param {number} page 페이지 번호
+     * @param {Connection} DB mysql 서버의 connection   * 
      * @returns page 별 게시판 html 템플릿
      */
-    board : function(page){
+    board : async function(page, DB_meta_Data){
         var post = ['', '', '', ''];
         var max_page = 0;
 
-        const fs = require('fs');
-        const folderPath = './Data';
+        var mysql = require('mysql2/promise');
 
-        try{
-            const files = fs.readdirSync(folderPath);
-            files.sort();
+        try {
+        // MySQL 연결 설정
+            const DB = await mysql.createConnection({
+                host     : DB_meta_Data.host,
+                user     : DB_meta_Data.user,
+                password : DB_meta_Data.password,
+                database : DB_meta_Data.database
+            });
 
-            for(var i =0; i<4; i++){
-                if(((page-1)*4 + i) < files.length){
-                    post[i] = `<li class="content"><a href='/post?id=${files[(page-1)*4 + i]}'>${files[(page-1)*4 + i]}</a></li>`;
-                }
-                else
-                    break;
-            }
-
-            max_page = (files.length%4 == 0) ? (Math.floor(files.length/4)) : (Math.floor(files.length/4) + 1) ;
+            // 쿼리 실행
+            var query = `SELECT * FROM posts ORDER BY created_time LIMIT ${(page-1)*4}, ${4}`;
+            var [posts] = await DB.execute(query);
             
 
-        } catch (err) {
-            console.log('Error reading directory: ', err);
-        }
+            for(var i =0; i<posts.length; i++){
+                post[i] = 
+                `<li class="content"><a href='/post?id=${posts[i].id}'>${posts[i].title}</a></li>`;
+            }
 
+            const [count] = await DB.execute(`SELECT COUNT(*) AS count FROM posts`);
+            max_page = Math.ceil(count[0].count / 4);
+
+
+            // MySQL 연결 종료
+            await DB.end();
+        } catch (error) {
+                console.error('Error:', error);
+                return '';
+        }
+        
+        // 이동버튼 설정
         var back_link = '#';
         var post_link = '#';
         var link_button = ['', '', ''];
@@ -54,6 +68,7 @@ var template = {
         }
 
 
+        //return 
         return `
         <!doctype html>
         <html lang="en">
@@ -103,6 +118,7 @@ var template = {
             </body>
         </html>
         `;
+        
     },
     post : function(id){
 
