@@ -1,27 +1,19 @@
-var mysql = require('mysql2/promise');
+var mysql      = require('mysql2');
+var connection = mysql.createConnection({
+    host     : 'localhost',
+    user     : 'root',
+    password : '583327',
+    database : 'simple_crud'
+});
 
-async function fetchData() {
-    try {
-        // MySQL 연결 설정
-        const connection = await mysql.createConnection({
-            host     : 'localhost',
-            user     : 'root',
-            password : '583327',
-            database : 'simple_crud'
-        });
+connection.connect();
 
-        // 쿼리 실행
-        const [rows, fields] = await connection.execute('SELECT * FROM posts');
 
-        // 결과 처리
-        console.log(rows); // 쿼리 결과 출력
-
-        // MySQL 연결 종료
-        await connection.end();
-    } catch (error) {
-        console.error('Error:', error);
-    }
+for(var i=15; i<19; i++){
+    connection.query(`INSERT INTO posts(title, description, created_time, writter) VALUES ('ex${i}','example${i}', NOW(), 'MUN')`, function (error, results, fields) {
+        if (error) throw error;
+    });
 }
 
-// fetchData 함수 호출
-fetchData();
+
+connection.end();

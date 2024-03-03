@@ -120,19 +120,35 @@ var template = {
         `;
         
     },
-    post : function(id){
+    post : async function(id, DB_meta_Data){
 
-        var title = id;
-        var line = 'null';
+        var title = 'hello';
+        var description = 'null';
 
-        var fs = require('fs')
-        const filepath = `./Data/${id}`;
-
+        var mysql = require('mysql2/promise');
         try {
-            line = fs.readFileSync(filepath, 'utf8');
-        }   catch(err){
-            console.error(err);
-        }
+            // MySQL 연결 설정
+                const DB = await mysql.createConnection({
+                    host     : DB_meta_Data.host,
+                    user     : DB_meta_Data.user,
+                    password : DB_meta_Data.password,
+                    database : DB_meta_Data.database
+                });
+    
+                // 쿼리 실행
+                var query = `SELECT title, description FROM posts WHERE id = ?`;
+                var [posts] = await DB.execute(query, [id]);
+                
+                title = posts[0].title;
+                description = posts[0].description;
+    
+                // MySQL 연결 종료
+                await DB.end();
+            } catch (error) {
+                    console.error('Error:', error);
+                    return '';
+            }
+
         
 
         return `
@@ -168,7 +184,7 @@ var template = {
                 </header>
                 <main>
                     <h1>${title}</h1>
-                    <article>${line}</article>
+                    <article>${description}</article>
                 </main>
                 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
             </body>

@@ -52,9 +52,9 @@ app.get('/board', async function(req,res){
     }
 })
 
-app.get('/post', function(req, res){
+app.get('/post', async function(req, res){
     postId = req.query.id;
-    res.send(template.post(req.query.id));
+    res.send(await template.post(req.query.id, DB_meta_Data));
 })
 
 app.get('/create', function(req, res){
