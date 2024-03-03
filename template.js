@@ -144,10 +144,10 @@ var template = {
     
                 // MySQL 연결 종료
                 await DB.end();
-            } catch (error) {
-                    console.error('Error:', error);
-                    return '';
-            }
+        } catch (error) {
+                console.error('Error:', error);
+                return '';
+        }
 
         
 
@@ -192,19 +192,36 @@ var template = {
         `
     },
 
-    inputForm : function(mode, id=null) {
+    inputForm : async function(mode, id=null, DB_meta_Data=null) {
 
         var title = '';
-        var line = '';
-        if(id!=null){
-            title = id;
-            var fs = require('fs')
-            const filepath = `./Data/${id}`;
+        var description = '';
+        var writter = '';
 
+        if(id != null){
+            var mysql = require('mysql2/promise');
             try {
-                line = fs.readFileSync(filepath, 'utf8');
-            }   catch(err){
-                console.error(err);
+                // MySQL 연결 설정
+                const DB = await mysql.createConnection({
+                    host     : DB_meta_Data.host,
+                    user     : DB_meta_Data.user,
+                    password : DB_meta_Data.password,
+                    database : DB_meta_Data.database
+                });
+        
+                // 쿼리 실행
+                var query = `SELECT title, description, writter FROM posts WHERE id = ?`;
+                var [posts] = await DB.execute(query, [id]);
+                    
+                title = posts[0].title;
+                description = posts[0].description;
+                writter = posts[0].writter;
+        
+                // MySQL 연결 종료
+                await DB.end();
+            } catch (error) {
+                console.error('Error:', error);
+                return '';
             }
         }
 
@@ -229,9 +246,14 @@ var template = {
                             <input type="text" class="form-control" id="exampleFormControlInput1" name="title" value="${title}">
                         </div>
                         <div class="mb-3">
-                            <label for="exampleFormControlTextarea1" class="form-label">내용</label>
-                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="line">${line}</textarea>
+                            <label for="exampleFormControlInput2" class="form-label">글쓴이</label>
+                            <input type="text" class="form-control" id="exampleFormControlInput2" name="writter" value="${writter}">
                         </div>
+                        <div class="mb-3">
+                            <label for="exampleFormControlTextarea1" class="form-label">내용</label>
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="description">${description}</textarea>
+                        </div>
+                        <input type="hidden" name="id" value=${id}>
                         <input type="submit">
                     </form>
                 </main>

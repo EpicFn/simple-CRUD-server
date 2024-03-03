@@ -57,42 +57,74 @@ app.get('/post', async function(req, res){
     res.send(await template.post(req.query.id, DB_meta_Data));
 })
 
-app.get('/create', function(req, res){
-    res.send(template.inputForm('create'));
+app.get('/create', async function(req, res){
+    res.send(await template.inputForm('create'));
 })
 
-app.post('/create_process', function(req, res){
-    var title = req.body.title;
-    var line = req.body.line;
+app.post('/create_process', async function(req, res){
+    
 
-    fs.writeFile(`Data/${title}`, line, function(err){
-        if(err){
-            console.err(err);
-        }
-    })
+    var mysql = require('mysql2/promise');
+    try {
+        // MySQL 연결 설정
+        const DB = await mysql.createConnection({
+            host     : DB_meta_Data.host,
+            user     : DB_meta_Data.user,
+            password : DB_meta_Data.password,
+            database : DB_meta_Data.database
+        });
+    
+        // 쿼리 실행
+        var query = `INSERT INTO posts(title, description, created_time, writter)
+                    VALUES (?, ?, NOW(), ?)`;
+        var [posts] = await DB.execute(query, [req.body.title, req.body.description, req.body.writter]);
+                
+    
+        // MySQL 연결 종료
+        await DB.end();
+    } catch (error) {
+        console.error('Error:', error);
+        return '';
+    }
 
     res.redirect(`/`);
 })
 
-app.get('/update', function(req,res){
+app.get('/update', async function(req,res){
     if(req.query.id == postId)
-        res.send(template.inputForm('update', req.query.id));
+        res.send(await template.inputForm('update', req.query.id, DB_meta_Data));
     else{
         res.send('잘못된 접근');
     }
 })
 
-app.post('/update_process', function(req,res){
-    var title = req.body.title;
-    var line = req.body.line;
+app.post('/update_process', async function(req,res){
+    
+    var mysql = require('mysql2/promise');
+    try {
+        // MySQL 연결 설정
+        const DB = await mysql.createConnection({
+            host     : DB_meta_Data.host,
+            user     : DB_meta_Data.user,
+            password : DB_meta_Data.password,
+            database : DB_meta_Data.database
+        });
+    
+        // 쿼리 실행
+        var query = `UPDATE posts
+                    SET title = ?, description = ?, writter = ?
+                    WHERE id = ?`
+        var [posts] = await DB.execute(query, 
+            [req.body.title, req.body.description, req.body.writter, req.body.id]);
+                
+        // MySQL 연결 종료
+        await DB.end();
+    } catch (error) {
+        console.error('Error:', error);
+        return '';
+    }
 
-    fs.writeFile(`Data/${title}`, line, function(err){
-        if(err){
-            console.err(err);
-        }
-    })
-
-    res.redirect(`/post?id=${title}`);
+    res.redirect(`/post?id=${req.body.id}`);
 })
 
 app.get('/delete', function(req,res){
