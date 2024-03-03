@@ -175,7 +175,10 @@ var template = {
                                         <a class="nav-link active" aria-current="page" href="/update?id=${id}">수정</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="/delete?id=${id}">삭제</a>
+                                        <form action="/delete" method="POST">
+                                            <button type="submit">삭제</button>
+                                            <input type="hidden" name="id" value=${id}>
+                                        </form>
                                     </li>
                                 </ul>
                             </div>

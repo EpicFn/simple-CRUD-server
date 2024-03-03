@@ -127,7 +127,7 @@ app.post('/update_process', async function(req,res){
     res.redirect(`/post?id=${req.body.id}`);
 })
 
-app.get('/delete', function(req,res){
+app.get('/delete', async function(req,res){
     if(req.query.id == postId){
         fs.unlink(`Data/${req.query.id}`, function (err) {
             if (err) throw err;
@@ -140,6 +140,29 @@ app.get('/delete', function(req,res){
     }
 
     
+})
+
+
+app.post('/delete', function(req,res){
+    if(req.body.id == postId){
+        var mysql = require('mysql2');
+        var DB = mysql.createConnection({
+            host : DB_meta_Data.host,
+            user : DB_meta_Data.user,
+            password : DB_meta_Data.password,
+            database : DB_meta_Data.database
+        });
+        DB.connect();
+
+        DB.query(`DELETE FROM posts WHERE id = ?`,[req.body.id], function(err, result){
+            if(err) throw err;
+            res.redirect(`/`);
+        });
+        
+    }
+    else{
+        res.send('잘못된 접근');
+    }
 })
 
 app.listen(3000);
