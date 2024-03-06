@@ -75,7 +75,7 @@ var template = {
             <head>
                 <meta charset="utf-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1">
-                <title>커여운 게시판</title>
+                <title>게시판</title>
                 <link rel="stylesheet" href="boardStyle.css" >
                 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
                 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -84,7 +84,7 @@ var template = {
             </head>
             <body>
                 <header class="main_header">
-                    <h1 class="main_title"><a href="/">커여운 게시판!!!</a></h1>
+                    <h1 class="main_title"><a href="/">게시판!!!</a></h1>
                     <a href='/create' class='create_button'>글 작성</a>
                 </header>
                 
@@ -240,7 +240,7 @@ var template = {
             </head>
             <body>
                 <header class="main_header">
-                    <h1 class="main_title"><a href="/">커여운 게시판!!!</a></h1>
+                    <h1 class="main_title"><a href="/">게시판!!!</a></h1>
                 </header>
                 <main>
                     <form action = "/${mode}_process" accept-charset="utf-8" name="createData" method="post">
